@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio GIS · Plantilla editable</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ==========================================================================
+   TOKENS — cambia aquí los colores, tipografías y espaciados del sitio
+   ========================================================================== */
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+
+  --ink-900:#0b1512;   /* fondo principal */
+  --ink-800:#101e19;   /* tarjetas / paneles */
+  --ink-700:#182a23;   /* hover / elementos elevados */
+  --line:rgba(237,235,226,.10);
+  --line-strong:rgba(237,235,226,.18);
+
+  --paper:#edebe2;         /* texto principal sobre fondo oscuro */
+  --paper-dim:#a7b3ac;     /* texto secundario */
+  --paper-faint:#6c7a72;   /* texto terciario / metadatos */
+
+  --teal:#57b8ac;      /* acento "agua" — enlaces, foco */
+  --teal-dim:rgba(87,184,172,.14);
+  --ochre:#d9a441;     /* acento "curva de nivel" — CTAs, etiquetas */
+  --ochre-dim:rgba(217,164,65,.14);
+
+  --font-display:'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-body:'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-mono:'IBM Plex Mono', 'Courier New', monospace;
+
+  --maxw:1120px;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:inherit; margin:0; padding:0;}
+
+@media (prefers-color-scheme: dark){
+  :root{ color-scheme: dark; }
+}
+
+html{ scroll-behavior:smooth; scroll-padding-top:5.5rem; }
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+
+body{
+  background:var(--ink-900);
+  color:var(--paper);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+
+img{ max-width:100%; display:block; }
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+
+.wrap{
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:clamp(1.25rem, 4vw, 2.5rem);
+}
+
+h1,h2,h3{ font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; color:var(--paper); }
+
+h2.section-title{
+  font-size:clamp(1.6rem, 1.1rem + 1.8vw, 2.35rem);
+  max-width:20ch;
+}
+.section-kicker{
+  font-family:var(--font-mono);
+  font-size:.8rem;
+  color:var(--teal);
+  margin-bottom:.6rem;
+}
+.section-lede{
+  color:var(--paper-dim);
+  max-width:56ch;
+  margin-top:.9rem;
+  font-size:1.02rem;
+}
+
+section{ padding-block:clamp(3.5rem, 6vw, 6.5rem); border-top:1px solid var(--line); }
+section:first-of-type{ border-top:none; }
+
+/* botones */
+.btn{
+  display:inline-flex; align-items:center; gap:.5rem;
+  font-family:var(--font-body); font-weight:600; font-size:.95rem;
+  padding:.75rem 1.35rem; border-radius:999px;
+  border:1px solid transparent; cursor:pointer;
+  transition:transform .15s ease, background-color .15s ease, border-color .15s ease;
+}
+.btn:active{ transform:translateY(1px); }
+.btn-primary{ background:var(--ochre); color:#1a1305; }
+.btn-primary:hover{ background:#e6b559; }
+.btn-outline{ border-color:var(--line-strong); color:var(--paper); }
+.btn-outline:hover{ border-color:var(--teal); color:var(--teal); }
+.btn:focus-visible, a:focus-visible, button:focus-visible{
+  outline:2px solid var(--teal); outline-offset:3px;
+}
+
+/* etiquetas / chips */
+.tag{
+  font-family:var(--font-mono); font-size:.75rem;
+  color:var(--paper-dim);
+  border:1px solid var(--line-strong);
+  border-radius:6px; padding:.25rem .55rem;
+  display:inline-block;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.site-header{
+  position:sticky; top:0; z-index:50;
+  padding-top:env(safe-area-inset-top,0px);
+  background:rgba(11,21,18,.82);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.site-header .wrap{
+  height:4.25rem; display:flex; align-items:center; justify-content:space-between;
+}
+.brand{ display:flex; align-items:center; gap:.65rem; font-family:var(--font-display); font-weight:600; }
+.brand-mark{
+  width:2.1rem; height:2.1rem; border-radius:7px;
+  background:linear-gradient(155deg, var(--teal), var(--ochre));
+  display:flex; align-items:center; justify-content:center;
+  color:#0b1512; font-size:.85rem; font-weight:700;
+}
+nav.primary-nav ul{ display:flex; gap:2rem; }
+nav.primary-nav a{
+  font-size:.92rem; color:var(--paper-dim);
+  padding:.3rem 0; border-bottom:1px solid transparent;
+  transition:color .15s ease, border-color .15s ease;
+}
+nav.primary-nav a:hover, nav.primary-nav a.active{ color:var(--paper); border-color:var(--ochre); }
+
+.nav-toggle{
+  display:none; width:2.4rem; height:2.4rem; border-radius:8px;
+  border:1px solid var(--line-strong); background:transparent; color:var(--paper);
+  cursor:pointer; align-items:center; justify-content:center;
+}
+.nav-toggle svg{ width:1.15rem; height:1.15rem; }
+
+@media (max-width: 760px){
+  nav.primary-nav{
+    position:fixed; inset:4.25rem 0 0 0;
+    background:var(--ink-900);
+    transform:translateY(-8px); opacity:0; pointer-events:none;
+    transition:opacity .18s ease, transform .18s ease;
+    padding:2rem clamp(1.25rem,4vw,2.5rem);
+  }
+  nav.primary-nav.open{ opacity:1; transform:translateY(0); pointer-events:auto; }
+  nav.primary-nav ul{ flex-direction:column; gap:1.4rem; }
+  nav.primary-nav a{ font-size:1.15rem; }
+  .nav-toggle{ display:inline-flex; }
+}
+
+/* ==========================================================================
+   HERO
+   ========================================================================== */
+.hero{ padding-top:clamp(3.5rem, 8vw, 6rem); }
+.hero .wrap{
+  display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(2rem, 5vw, 4rem);
+  align-items:center;
+}
+.hero-eyebrow{
+  font-family:var(--font-mono); font-size:.82rem; color:var(--paper-faint);
+  margin-bottom:1.1rem;
+}
+.hero h1{
+  font-size:clamp(2.3rem, 1.5rem + 3.3vw, 3.6rem);
+  line-height:1.08;
+}
+.hero h1 .accent{ color:var(--teal); }
+.hero-role{
+  margin-top:1.1rem; font-size:1.15rem; color:var(--paper-dim); max-width:44ch;
+}
+.hero-tags{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.4rem; }
+.hero-actions{ display:flex; flex-wrap:wrap; gap:.85rem; margin-top:2rem; }
+.hero-coord{
+  margin-top:2.2rem; font-family:var(--font-mono); font-size:.78rem; color:var(--paper-faint);
+}
+
+.hero-visual{ position:relative; aspect-ratio:1/1; }
+.hero-visual svg{ width:100%; height:100%; }
+
+.reveal{ animation:rise .6s ease both; }
+.reveal.d1{ animation-delay:.05s; }
+.reveal.d2{ animation-delay:.14s; }
+.reveal.d3{ animation-delay:.22s; }
+.reveal.d4{ animation-delay:.30s; }
+@keyframes rise{ from{ opacity:0; transform:translateY(12px);} to{ opacity:1; transform:translateY(0);} }
+@media (prefers-reduced-motion: reduce){ .reveal{ animation:none; } }
+
+@media (max-width: 860px){
+  .hero .wrap{ grid-template-columns:1fr; }
+  .hero-visual{ order:-1; max-width:280px; margin-inline:auto; }
+}
+
+/* ==========================================================================
+   SOBRE MÍ
+   ========================================================================== */
+.about-grid{
+  margin-top:2.5rem; display:grid; grid-template-columns:.85fr 1.15fr; gap:clamp(2rem,5vw,3.5rem);
+}
+.about-photo{
+  aspect-ratio:4/5; border-radius:var(--radius); overflow:hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(87,184,172,.35), transparent 55%),
+    radial-gradient(circle at 75% 80%, rgba(217,164,65,.30), transparent 55%),
+    var(--ink-800);
+  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--paper-faint); font-family:var(--font-mono); font-size:.8rem; text-align:center; padding:1rem;
+}
+.about-text p{ color:var(--paper-dim); margin-bottom:1.1rem; max-width:62ch; }
+.facts{ margin-top:1.6rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1.2rem; }
+.facts dt{ font-family:var(--font-mono); font-size:.72rem; color:var(--paper-faint); margin-bottom:.3rem; }
+.facts dd{ font-size:.95rem; color:var(--paper); }
+
+@media (max-width: 700px){ .about-grid{ grid-template-columns:1fr; } .about-photo{ max-width:260px; } }
+
+/* ==========================================================================
+   HABILIDADES
+   ========================================================================== */
+.skills-grid{
+  margin-top:2.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1.6rem;
+}
+.skill-card{
+  background:var(--ink-800); border:1px solid var(--line); border-radius:var(--radius);
+  padding:1.4rem 1.5rem;
+}
+.skill-card h3{ font-size:1rem; margin-bottom:.9rem; }
+.skill-card .chips{ display:flex; flex-wrap:wrap; gap:.45rem; }
+
+.areas-list{ margin-top:3rem; display:flex; flex-wrap:wrap; gap:.6rem; }
+.areas-list .tag{ color:var(--paper); border-color:var(--line-strong); background:var(--ink-800); padding:.45rem .8rem; font-family:var(--font-body); font-size:.85rem; }
+
+/* ==========================================================================
+   PROYECTOS
+   ========================================================================== */
+.projects-grid{
+  margin-top:2.5rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:1.6rem;
+}
+.project-card{
+  background:var(--ink-800); border:1px solid var(--line); border-radius:var(--radius);
+  overflow:hidden; display:flex; flex-direction:column;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.project-card:hover{ border-color:var(--line-strong); transform:translateY(-3px); }
+
+.project-thumb{
+  aspect-ratio:16/10; position:relative; overflow:hidden;
+  background:var(--ink-700);
+}
+.project-thumb svg{ width:100%; height:100%; }
+.project-thumb .thumb-label{
+  position:absolute; left:.8rem; bottom:.7rem;
+  font-family:var(--font-mono); font-size:.7rem; color:var(--paper-faint);
+  background:rgba(11,21,18,.6); padding:.2rem .5rem; border-radius:4px;
+}
+
+.project-body{ padding:1.3rem 1.4rem 1.5rem; display:flex; flex-direction:column; gap:.7rem; flex:1; }
+.project-body h3{ font-size:1.08rem; }
+.project-body p{ color:var(--paper-dim); font-size:.93rem; flex:1; }
+.project-chips{ display:flex; flex-wrap:wrap; gap:.4rem; }
+.project-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:.3rem; }
+.project-link{ font-size:.9rem; font-weight:600; color:var(--teal); }
+.project-link:hover{ text-decoration:underline; }
+.project-status{ font-family:var(--font-mono); font-size:.72rem; color:var(--ochre); }
+
+/* ==========================================================================
+   EXPERIENCIA — línea temporal
+   ========================================================================== */
+.timeline{ margin-top:2.5rem; max-width:64ch; }
+.tl-item{
+  position:relative; padding-left:2rem; padding-bottom:2.2rem;
+  border-left:1px solid var(--line-strong);
+}
+.tl-item:last-child{ padding-bottom:0; }
+.tl-item::before{
+  content:''; position:absolute; left:-.34rem; top:.35rem;
+  width:.6rem; height:.6rem; border-radius:50%;
+  background:var(--ink-900); border:2px solid var(--teal);
+}
+.tl-date{ font-family:var(--font-mono); font-size:.78rem; color:var(--paper-faint); }
+.tl-item h3{ font-size:1.02rem; margin-top:.3rem; }
+.tl-org{ color:var(--teal); font-size:.9rem; margin-top:.15rem; }
+.tl-item p{ color:var(--paper-dim); margin-top:.5rem; font-size:.93rem; }
+
+/* ==========================================================================
+   CONTACTO
+   ========================================================================== */
+.contact-panel{
+  margin-top:2.5rem; background:var(--ink-800); border:1px solid var(--line); border-radius:var(--radius);
+  padding:clamp(1.75rem,4vw,3rem); display:grid; grid-template-columns:1.2fr .8fr; gap:2.5rem;
+}
+.contact-panel p{ color:var(--paper-dim); max-width:44ch; }
+.contact-links{ display:flex; flex-direction:column; gap:.9rem; }
+.contact-links a, .contact-links button{
+  display:flex; align-items:center; gap:.7rem;
+  font-family:var(--font-body); font-size:.95rem; color:var(--paper);
+  background:var(--ink-700); border:1px solid var(--line-strong); border-radius:8px;
+  padding:.75rem 1rem; text-align:left; cursor:pointer; width:100%;
+  transition:border-color .15s ease;
+}
+.contact-links a:hover, .contact-links button:hover{ border-color:var(--teal); }
+.contact-links svg{ width:1.1rem; height:1.1rem; flex-shrink:0; color:var(--teal); }
+.copy-note{ font-family:var(--font-mono); font-size:.72rem; color:var(--ochre); margin-left:auto; }
+
+@media (max-width: 700px){ .contact-panel{ grid-template-columns:1fr; } }
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer{ border-top:1px solid var(--line); padding-block:2rem; }
+footer .wrap{
+  display:flex; flex-wrap:wrap; gap:.5rem 1.5rem; justify-content:space-between;
+  font-size:.82rem; color:var(--paper-faint); font-family:var(--font-mono);
+}
+</style>
+</head>
+<body>
+
+<!-- ==========================================================================
+     CÓMO EDITAR ESTA PLANTILLA (guía rápida)
+
+     1. TEXTOS: busca los corchetes [así] y sustitúyelos por tu información
+        (nombre, ubicación, bio, experiencia, email, enlaces...).
+
+     2. PROYECTOS: cada proyecto es un bloque <article class="project-card">.
+        Busca el comentario "PROYECTO — duplica este bloque" en la sección
+        #proyectos, copia el bloque completo y pega uno nuevo justo antes o
+        después para añadir más proyectos.
+
+     3. IMÁGENES: cada tarjeta de proyecto tiene un div .project-thumb con un
+        patrón SVG de relleno. Para usar tu propia imagen, sustituye el
+        contenido de ese div por: <img src="ruta/a/tu-imagen.jpg" alt="...">
+
+     4. COLORES: todos los colores están definidos como variables en
+        ":root" al principio del <style>. Cambia --teal y --ochre para
+        variar la paleta sin tocar el resto del CSS.
+
+     5. PUBLICAR GRATIS: sube este archivo (renómbralo a index.html) a un
+        repositorio de GitHub y activa GitHub Pages en Settings → Pages.
+        Tu portfolio quedará en tu-usuario.github.io/nombre-repo — gratis
+        y con tu propio dominio si lo compras aparte.
+   ========================================================================== -->
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="#inicio" class="brand">
+      <span class="brand-mark">TN</span>
+      [Tu Nombre]
+    </a>
+    <nav class="primary-nav" id="primaryNav">
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#sobre-mi">Sobre mí</a></li>
+        <li><a href="#habilidades">Habilidades</a></li>
+        <li><a href="#proyectos">Proyectos</a></li>
+        <li><a href="#experiencia">Experiencia</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================== HERO ============================== -->
+  <section class="hero" id="inicio">
+    <div class="wrap">
+      <div>
+        <p class="hero-eyebrow reveal d1">Portfolio de Sistemas de Información Geográfica</p>
+        <h1 class="reveal d2">[Tu Nombre]<br><span class="accent">Analista SIG</span> &amp; especialista en análisis espacial</h1>
+        <p class="hero-role reveal d3">
+          [Breve frase sobre a qué te dedicas: por ejemplo, "Geógrafo especializado en
+          teledetección y desarrollo de visores web, centrado en convertir datos
+          espaciales complejos en herramientas claras para la toma de decisiones."]
+        </p>
+        <div class="hero-tags reveal d3">
+          <span class="tag">Análisis espacial</span>
+          <span class="tag">Teledetección</span>
+          <span class="tag">Web GIS</span>
+        </div>
+        <div class="hero-actions reveal d4">
+          <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
+          <a href="#contacto" class="btn btn-outline">Contactar</a>
+        </div>
+        <p class="hero-coord reveal d4">[40.4168° N, 3.7038° W] — [Tu Ciudad, País]</p>
+      </div>
+
+      <div class="hero-visual reveal d2" aria-hidden="true">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="frame"><rect x="0" y="0" width="400" height="400" rx="18"/></clipPath>
+          </defs>
+          <rect x="0" y="0" width="400" height="400" rx="18" fill="#101e19" stroke="rgba(237,235,226,.12)"/>
+          <g clip-path="url(#frame)" fill="none" stroke-width="1.4">
+            <path d="M-20 340 C 60 300, 120 300, 180 260 C 250 215, 300 230, 430 190" stroke="#57b8ac" opacity=".9"/>
+            <path d="M-20 300 C 60 265, 130 270, 190 230 C 260 185, 300 195, 430 150" stroke="#57b8ac" opacity=".65"/>
+            <path d="M-20 260 C 60 230, 140 235, 200 200 C 270 155, 300 160, 430 110" stroke="#57b8ac" opacity=".4"/>
+            <path d="M-20 90 C 70 130, 130 120, 190 150 C 260 185, 310 175, 430 210" stroke="#d9a441" opacity=".85"/>
+            <path d="M-20 60 C 70 100, 140 90, 200 120 C 270 155, 320 145, 430 175" stroke="#d9a441" opacity=".6"/>
+            <path d="M-20 30 C 70 70, 150 60, 210 90 C 280 125, 330 115, 430 140" stroke="#d9a441" opacity=".35"/>
+          </g>
+          <circle cx="220" cy="205" r="4" fill="#edebe2"/>
+          <text x="232" y="200" font-family="IBM Plex Mono, monospace" font-size="10" fill="#a7b3ac">punto de estudio</text>
+          <rect x="0" y="0" width="400" height="400" rx="18" fill="none" stroke="rgba(237,235,226,.12)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== SOBRE MÍ ============================== -->
+  <section id="sobre-mi">
+    <div class="wrap">
+      <p class="section-kicker">01 — Perfil</p>
+      <h2 class="section-title">Sobre mí</h2>
+
+      <div class="about-grid">
+        <div class="about-photo">[Sustituye este bloque por tu foto: &lt;img src="tu-foto.jpg" alt="Foto de [Tu Nombre]"&gt;]</div>
+        <div class="about-text">
+          <p>
+            [Escribe aquí tu presentación: quién eres, tu formación y qué te llevó al mundo
+            del GIS. Por ejemplo: "Soy geógrafo/ambientólogo/ingeniero especializado en
+            sistemas de información geográfica, con interés particular en el análisis del
+            territorio y el desarrollo de herramientas web que hagan los datos espaciales
+            accesibles para cualquier persona."]
+          </p>
+          <p>
+            [Segundo párrafo: cuenta tu experiencia o el tipo de proyectos en los que has
+            trabajado — administraciones públicas, consultoras ambientales, ONGs,
+            investigación, freelance...]
+          </p>
+          <p>
+            [Tercer párrafo opcional: tus intereses o el enfoque que aplicas a tu trabajo.]
+          </p>
+
+          <dl class="facts">
+            <div><dt>Ubicación</dt><dd>[Ciudad, País]</dd></div>
+            <div><dt>Formación</dt><dd>[Grado / Máster, Universidad]</dd></div>
+            <div><dt>Idiomas</dt><dd>[Español, Inglés...]</dd></div>
+            <div><dt>Disponibilidad</dt><dd>[Abierto/a a proyectos]</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== HABILIDADES ============================== -->
+  <section id="habilidades">
+    <div class="wrap">
+      <p class="section-kicker">02 — Herramientas</p>
+      <h2 class="section-title">Habilidades técnicas</h2>
+      <p class="section-lede">Software, lenguajes y técnicas que utilizo en mi trabajo diario. Edita las listas según tu propio perfil.</p>
+
+      <div class="skills-grid">
+        <div class="skill-card">
+          <h3>Software SIG</h3>
+          <div class="chips">
+            <span class="tag">ArcGIS Pro</span><span class="tag">ArcGIS Online</span>
+            <span class="tag">QGIS</span><span class="tag">GeoServer</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Programación y datos</h3>
+          <div class="chips">
+            <span class="tag">Python</span><span class="tag">SQL</span>
+            <span class="tag">PostGIS</span><span class="tag">R</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Teledetección</h3>
+          <div class="chips">
+            <span class="tag">Google Earth Engine</span><span class="tag">Sentinel-2</span>
+            <span class="tag">ENVI</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Cartografía web</h3>
+          <div class="chips">
+            <span class="tag">Leaflet</span><span class="tag">Mapbox GL</span>
+            <span class="tag">ArcGIS API for JS</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Diseño cartográfico</h3>
+          <div class="chips">
+            <span class="tag">QGIS Print Composer</span><span class="tag">Illustrator</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="areas-list">
+        <span class="tag">Análisis espacial</span>
+        <span class="tag">Ordenación del territorio</span>
+        <span class="tag">Teledetección ambiental</span>
+        <span class="tag">Desarrollo de visores web</span>
+        <span class="tag">Bases de datos espaciales</span>
+        <span class="tag">Cartografía temática</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== PROYECTOS ============================== -->
+  <section id="proyectos">
+    <div class="wrap">
+      <p class="section-kicker">03 — Trabajo</p>
+      <h2 class="section-title">Proyectos seleccionados</h2>
+      <p class="section-lede">Una muestra de análisis espaciales y visores web que he desarrollado. Sustituye estos ejemplos por tus propios proyectos.</p>
+
+      <div class="projects-grid">
+
+        <!-- PROYECTO — duplica este bloque completo para añadir otro proyecto -->
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g fill="none" stroke="#57b8ac" stroke-width="1.2" opacity=".6">
+                <path d="M0 210 C 90 180 150 190 220 150 C 290 110 330 120 400 90"/>
+                <path d="M0 170 C 90 145 160 150 230 115 C 300 80 340 90 400 60"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Análisis de cambio de uso del suelo]</h3>
+            <p>[Breve descripción: qué problema resolviste, con qué datos y qué resultado obtuviste.]</p>
+            <div class="project-chips">
+              <span class="tag">QGIS</span><span class="tag">Python</span><span class="tag">Sentinel-2</span>
+            </div>
+            <div class="project-foot">
+              <a href="#" class="project-link">Ver proyecto</a>
+            </div>
+          </div>
+        </article>
+        <!-- FIN PROYECTO -->
+
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g fill="none" stroke="#d9a441" stroke-width="1.2" opacity=".6">
+                <path d="M0 60 C 80 100 140 90 210 120 C 280 150 330 140 400 170"/>
+                <path d="M0 30 C 90 75 150 65 220 95 C 290 125 340 115 400 140"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Visor web de accesibilidad urbana]</h3>
+            <p>[Breve descripción: municipio o zona analizada, metodología y a quién sirve el visor.]</p>
+            <div class="project-chips">
+              <span class="tag">Leaflet</span><span class="tag">PostGIS</span><span class="tag">JavaScript</span>
+            </div>
+            <div class="project-foot">
+              <a href="#" class="project-link">Ver proyecto</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g fill="none" stroke="#57b8ac" stroke-width="1.2" opacity=".5">
+                <circle cx="200" cy="125" r="40"/><circle cx="200" cy="125" r="70"/><circle cx="200" cy="125" r="100"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Modelo de riesgo de inundación]</h3>
+            <p>[Breve descripción: fuente de datos hidrológicos, software usado y aplicación práctica del modelo.]</p>
+            <div class="project-chips">
+              <span class="tag">ArcGIS Pro</span><span class="tag">HEC-RAS</span>
+            </div>
+            <div class="project-foot">
+              <a href="#" class="project-link">Ver proyecto</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g fill="none" stroke="#d9a441" stroke-width="1.2" opacity=".55">
+                <path d="M20 40 L 100 210 M 100 210 L 180 60 M 180 60 L 260 200 M 260 200 L 380 50"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Mapa de vegetación NDVI]</h3>
+            <p>[Breve descripción: periodo temporal analizado, fuente satelital y hallazgos principales.]</p>
+            <div class="project-chips">
+              <span class="tag">Google Earth Engine</span><span class="tag">Sentinel-2</span>
+            </div>
+            <div class="project-foot">
+              <a href="#" class="project-link">Ver proyecto</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g stroke="#57b8ac" stroke-width="1" opacity=".4">
+                <line x1="0" y1="50" x2="400" y2="50"/><line x1="0" y1="100" x2="400" y2="100"/>
+                <line x1="0" y1="150" x2="400" y2="150"/><line x1="0" y1="200" x2="400" y2="200"/>
+                <line x1="80" y1="0" x2="80" y2="250"/><line x1="160" y1="0" x2="160" y2="250"/>
+                <line x1="240" y1="0" x2="240" y2="250"/><line x1="320" y1="0" x2="320" y2="250"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Dashboard de movilidad urbana]</h3>
+            <p>[Breve descripción: indicadores representados, fuente de datos y para quién se construyó.]</p>
+            <div class="project-chips">
+              <span class="tag">ArcGIS Online</span><span class="tag">Power BI</span>
+            </div>
+            <div class="project-foot">
+              <a href="#" class="project-link">Ver proyecto</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-card">
+          <div class="project-thumb">
+            <svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="250" fill="#16261f"/>
+              <g fill="none" stroke="#a7b3ac" stroke-width="1.2" stroke-dasharray="4 5" opacity=".5">
+                <path d="M0 210 C 90 180 150 190 220 150 C 290 110 330 120 400 90"/>
+              </g>
+            </svg>
+            <span class="thumb-label">[miniatura del proyecto]</span>
+          </div>
+          <div class="project-body">
+            <h3>[Nombre del proyecto en curso]</h3>
+            <p>[Descripción breve de un proyecto que todavía estás desarrollando.]</p>
+            <div class="project-chips">
+              <span class="tag">[Herramienta]</span>
+            </div>
+            <div class="project-foot">
+              <span class="project-status">En desarrollo</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== EXPERIENCIA ============================== -->
+  <section id="experiencia">
+    <div class="wrap">
+      <p class="section-kicker">04 — Trayectoria</p>
+      <h2 class="section-title">Experiencia y formación</h2>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <p class="tl-date">[2023 — Presente]</p>
+          <h3>[Puesto actual]</h3>
+          <p class="tl-org">[Empresa u organización]</p>
+          <p>[Breve descripción de tus responsabilidades y logros principales.]</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-date">[2021 — 2023]</p>
+          <h3>[Puesto anterior]</h3>
+          <p class="tl-org">[Empresa u organización]</p>
+          <p>[Breve descripción del rol y proyectos destacados.]</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-date">[2020]</p>
+          <h3>[Prácticas / primer proyecto relevante]</h3>
+          <p class="tl-org">[Empresa u organización]</p>
+          <p>[Breve descripción.]</p>
+        </div>
+        <div class="tl-item">
+          <p class="tl-date">[Año]</p>
+          <h3>[Título académico]</h3>
+          <p class="tl-org">[Universidad / centro]</p>
+          <p>[Especialidad o trabajo final relevante, si aplica.]</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================== CONTACTO ============================== -->
+  <section id="contacto">
+    <div class="wrap">
+      <p class="section-kicker">05 — Contacto</p>
+      <h2 class="section-title">Hablemos</h2>
+
+      <div class="contact-panel">
+        <div>
+          <p>
+            [Frase de cierre invitando a contactar: por ejemplo, "¿Tienes un proyecto
+            relacionado con análisis territorial o cartografía? Escríbeme, estaré
+            encantado/a de hablar sobre ello."]
+          </p>
+        </div>
+        <div class="contact-links">
+          <button id="copyEmail" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+            <span id="emailText">[tu.email@ejemplo.com]</span>
+            <span class="copy-note" id="copyNote" hidden>copiado</span>
+          </button>
+          <a href="https://www.linkedin.com/in/tu-usuario" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9h4v12H3V9Zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.77 2.5 4.77 5.75V21h-4v-5.6c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21h-4V9Z"/></svg>
+            <span>linkedin.com/in/tu-usuario</span>
+          </a>
+          <a href="https://github.com/tu-usuario" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.2-3.37-1.2-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.4 9.4 0 0 1 5 0c1.9-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .26.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+            <span>github.com/tu-usuario</span>
+          </a>
+          <a href="ruta/a/tu-cv.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M9 15h6M9 11h3"/></svg>
+            <span>Descargar CV (PDF)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© [2026] [Tu Nombre] — Portfolio SIG</span>
+    <span>Plantilla base — sustituye este texto libremente</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var toggle = document.getElementById('navToggle');
+  var nav = document.getElementById('primaryNav');
+  toggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      nav.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // resaltar enlace activo del menú según la sección visible
+  var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          var id = '#' + entry.target.id;
+          links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href') === id); });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    sections.forEach(function(s){ obs.observe(s); });
+  }
+
+  // copiar email al portapapeles
+  var copyBtn = document.getElementById('copyEmail');
+  var copyNote = document.getElementById('copyNote');
+  copyBtn.addEventListener('click', function(){
+    var text = document.getElementById('emailText').textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(showCopied, showCopied);
+    } else {
+      showCopied();
+    }
+  });
+  function showCopied(){
+    copyNote.hidden = false;
+    setTimeout(function(){ copyNote.hidden = true; }, 1800);
+  }
+})();
+</script>
+</body>
+</html>
